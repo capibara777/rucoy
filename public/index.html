@@ -53,7 +53,8 @@
 <script>
   async function showUserData() {
     const userId = localStorage.getItem("userId");
-    if (!userId) return window.location.href = "login.html";
+    const userEmail = localStorage.getItem("userEmail");
+    if (!userId || !userEmail) return window.location.href = "login.html";
 
     const res = await fetch(`/getUserData/${userId}`);
     if (!res.ok) return logout();
@@ -65,32 +66,43 @@
       <p>Correo: ${user.email}</p>
       <p>Verificado: ${user.verified ? "Sí" : "No"}</p>
       <input type="text" id="newUsername" placeholder="Nuevo nombre">
-      <button onclick="editUsername('${user._id}')">Editar nombre</button>
+      <button onclick="editUsername()">Editar nombre</button>
       <p id="editResponse"></p>
       <button onclick="deleteAccount('${user._id}')">Eliminar cuenta</button>
       <button onclick="logout()">Cerrar sesión</button>
     `;
   }
 
-  async function editUsername(userId) {
-    const newUsername = document.getElementById("newUsername").value;
+  async function editUsername() {
+    const newUsername = document.getElementById("newUsername").value.trim();
+    const email = localStorage.getItem("userEmail");
+
+    if (!newUsername) {
+      document.getElementById("editResponse").textContent = "Debes ingresar un nuevo nombre.";
+      return;
+    }
+
     const res = await fetch("/edit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: localStorage.getItem("userEmail"), newUsername })
+      body: JSON.stringify({ email, newUsername })
     });
+
     const msg = await res.text();
     document.getElementById("editResponse").textContent = msg;
+
     if (msg.includes("Actualizado")) showUserData();
   }
 
   async function deleteAccount(userId) {
     if (!confirm("¿Eliminar cuenta?")) return;
+
     const res = await fetch("/delete", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }) // nombre correcto
+      body: JSON.stringify({ userId })
     });
+
     alert("\n" + await res.text());
     logout();
   }

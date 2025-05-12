@@ -50,58 +50,59 @@
   </main>
 
   <script src="script.js"></script>
-  <script>
-    async function showUserData() {
-      const userId = localStorage.getItem("userId");
-      if (!userId) return window.location.href = "login.html";
+<script>
+  async function showUserData() {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return window.location.href = "login.html";
 
-      const res = await fetch(`/getUserData/${userId}`);
-      if (!res.ok) return logout();
-      const user = await res.json();
+    const res = await fetch(`/getUserData/${userId}`);
+    if (!res.ok) return logout();
+    const user = await res.json();
 
-      document.getElementById("userData").innerHTML = `
-        <h3>Bienvenido, ${user.username}</h3>
-        <p>Coins: ${user.coins}</p>
-        <p>Correo: ${user.email}</p>
-        <p>Verificado: ${user.verified ? "Sí" : "No"}</p>
-        <input type="text" id="newUsername" placeholder="Nuevo nombre">
-        <button onclick="editUsername('${user._id}')">Editar nombre</button>
-        <p id="editResponse"></p>
-        <button onclick="deleteAccount('${user._id}')">Eliminar cuenta</button>
-        <button onclick="logout()">Cerrar sesión</button>
-      `;
-    }
+    document.getElementById("userData").innerHTML = `
+      <h3>Bienvenido, ${user.username}</h3>
+      <p>Coins: ${user.coins}</p>
+      <p>Correo: ${user.email}</p>
+      <p>Verificado: ${user.verified ? "Sí" : "No"}</p>
+      <input type="text" id="newUsername" placeholder="Nuevo nombre">
+      <button onclick="editUsername('${user.username}')">Editar nombre</button>
+      <p id="editResponse"></p>
+      <button onclick="deleteAccount('${user._id}')">Eliminar cuenta</button>
+      <button onclick="logout()">Cerrar sesión</button>
+    `;
+  }
 
-    async function editUsername(userId) {
-      const newUsername = document.getElementById("newUsername").value;
-      const res = await fetch("/edit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: userId, newUsername })
-      });
-      const msg = await res.text();
-      document.getElementById("editResponse").textContent = msg;
-      if (msg.includes("Actualizado")) showUserData();
-    }
+  async function editUsername(userId) {
+    const newUsername = document.getElementById("newUsername").value;
+    const res = await fetch("/edit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: localStorage.getItem("userEmail"), newUsername })
+    });
+    const msg = await res.text();
+    document.getElementById("editResponse").textContent = msg;
+    if (msg.includes("Actualizado")) showUserData();
+  }
 
-    async function deleteAccount(userId) {
-      if (!confirm("¿Eliminar cuenta?")) return;
-      const res = await fetch("/delete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: userId })
-      });
-      alert(await res.text());
-      logout();
-    }
+  async function deleteAccount(userId) {
+    if (!confirm("¿Eliminar cuenta?")) return;
+    const res = await fetch("/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }) // nombre correcto
+    });
+    alert("\n" + await res.text());
+    logout();
+  }
 
-    function logout() {
-      localStorage.removeItem("userId");
-      window.location.href = "login.html";
-    }
+  function logout() {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userEmail");
+    window.location.href = "login.html";
+  }
 
-    window.onload = showUserData;
-  </script>
+  window.onload = showUserData;
+</script>
   <script src="nav.js"></script>
 </body>
 </html>
