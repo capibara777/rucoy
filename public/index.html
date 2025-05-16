@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rucoy Market</title>
+
+  <!-- Ícono -->
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/10069/10069349.png" type="image/png">
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Open Graph para Facebook y otros -->
+  <meta property="og:title" content="Rucoy Market" />
+  <meta property="og:description" content="Compra y vende ítems de Rucoy Online con facilidad." />
+  <meta property="og:image" content="https://cdn.glitch.global/f53332bc-2459-4ba5-9d68-52f7f4848e11/20250512_224225.jpg?v=1747104414448" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://cord-equinox-dinghy.glitch.me/index.html" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card (opcional) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Rucoy Market" />
+  <meta name="twitter:description" content="Compra y vende ítems de Rucoy Online con facilidad." />
+  <meta name="twitter:image" content="https://cdn.glitch.global/f53332bc-2459-4ba5-9d68-52f7f4848e11/20250512_224225.jpg?v=1747104414448" />
+
+  <style>
+    /* Contenedor de productos */
+    #productosContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 10px;
+    }
+
+    /* Cada producto */
+    .producto {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Imagen del producto */
+    .producto-imagen {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .icono-wsp {
+      width: 18px;
+      height: 18px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- ENCABEZADO -->
+  <header class="header">
+    <h1>Rucoy Market</h1>
+    <div class="header-buttons">
+      
+      
+      
+     <input type="text" id="buscador" placeholder="Buscar productos..." />
+<!-- Este script filtra los productos que ya están cargados -->
+<script>
+  document.getElementById("buscador").addEventListener("input", function () {
+    const filtro = this.value.toLowerCase();
+    const productos = document.querySelectorAll("#productosContainer .producto");
+
+    productos.forEach(producto => {
+      const texto = producto.textContent.toLowerCase();
+      producto.style.display = texto.includes(filtro) ? "" : "none";
+    });
+  });
+</script> 
+      
+      
+      
+      <button id="publicacionesBtn">Publicaciones</button>
+      <button id="publicarBtn">+ Publicar</button>
+      <button id="perfilBtn">Perfil</button>
+    </div>
+  </header>
+
+  <!-- PANEL DE USUARIO -->
+  <aside id="userData" class="user-panel hidden"></aside>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="main-content">
+    <!-- PUBLICACIONES -->
+    <section id="productosContainer" class="productos"></section>
+
+    <!-- FORMULARIO DE PUBLICACIÓN -->
+    <div id="formularioContainer" class="modal hidden">
+      <form id="formulario" method="POST" enctype="multipart/form-data">
+        <h2>Publicar</h2>
+        <input type="text" name="item" placeholder="Nombre del producto" required />
+        <input type="number" name="precio" placeholder="Precio ($)" required />
+        <input type="text" name="numero" placeholder="Número de WhatsApp" required />
+        <input type="text" name="nombre_juego" placeholder="Nombre en el juego" required />
+        <label><strong>Imagen:</strong></label>
+        <input type="file" name="imagen" accept="image/*" required />
+        <div class="form-buttons">
+          <button type="submit">Publicar</button>
+          <button type="button" id="cerrarForm">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ADVERTENCIA SIN SESIÓN -->
+    <div id="advertencia" class="advertencia hidden">
+      Necesitas iniciar sesión para publicar.
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+<script>
+  async function showUserData() {
+    const userId = localStorage.getItem("userId");
+    const userEmail = localStorage.getItem("userEmail");
+
+    const userPanel = document.getElementById("userData");
+    userPanel.classList.remove("hidden");
+
+    // Si no hay sesión, mostrar botón de iniciar sesión
+    if (!userId || !userEmail) {
+      userPanel.innerHTML = `
+        <h3>No has iniciado sesión</h3>
+        <button onclick="window.location.href='login.html'">Iniciar sesión</button>
+      `;
+      return;
+    }
+
+    // Si hay sesión, obtener datos del servidor
+    const res = await fetch(`/getUserData/${userId}`);
+    if (!res.ok) return logout();
+
+    const user = await res.json();
+
+    userPanel.innerHTML = `
+      <h3>Bienvenido, ${user.username}</h3>
+      <p>Coins: ${user.coins}</p>
+      <p>Correo: ${user.email}</p>
+      <p>Verificado: ${user.verified ? "Sí" : "No"}</p>
+      <input type="text" id="newUsername" placeholder="Nuevo nombre">
+      <button onclick="editUsername()">Editar nombre</button>
+      <p id="editResponse"></p>
+      <button onclick="deleteAccount('${user._id}')">Eliminar cuenta</button>
+      <button onclick="logout()">Cerrar sesión</button>
+      <a href="https://chat.whatsapp.com/CkllBGsdzxi0jLiawyPuFQ" target="_blank">
+        <button>Comunidad</button>
+      </a>
+    `;
+  }
+
+  async function editUsername() {
+    const newUsername = document.getElementById("newUsername").value.trim();
+    const email = localStorage.getItem("userEmail");
+
+    if (!newUsername) {
+      document.getElementById("editResponse").textContent = "Debes ingresar un nuevo nombre.";
+      return;
+    }
+
+    const res = await fetch("/edit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, newUsername })
+    });
+
+    const msg = await res.text();
+    document.getElementById("editResponse").textContent = msg;
+
+    if (msg.includes("Actualizado")) showUserData();
+  }
+
+  async function deleteAccount(userId) {
+    if (!confirm("¿Eliminar cuenta?")) return;
+
+    const res = await fetch("/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId })
+    });
+
+    alert("\n" + await res.text());
+    logout();
+  }
+
+  function logout() {
+    localStorage.clear();
+    location.reload();
+  }
+
+  window.onload = showUserData;
+</script>
+  <script src="nav.js"></script>
+</body>
+</html>

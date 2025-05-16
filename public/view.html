@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rucoy Market - Vista pública</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/10069/10069349.png" type="image/png">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #productosContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 10px;
+    }
+    .producto {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .producto-imagen {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .icono-wsp {
+      width: 18px;
+      height: 18px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- ENCABEZADO igual al index -->
+  <header class="header">
+    <h1>Rucoy Market</h1>
+    <div class="header-buttons">
+      <input type="text" id="buscador" placeholder="Buscar productos..." />
+      <a href="login.html"><button>Iniciar Sesión</button></a>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="main-content">
+    <section id="productosContainer" class="productos"></section>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    // Cargar productos al iniciar
+    cargarProductos();
+
+    // Buscador de productos
+    document.getElementById("buscador").addEventListener("input", function () {
+      const filtro = this.value.toLowerCase();
+      const productos = document.querySelectorAll("#productosContainer .producto");
+
+      productos.forEach(producto => {
+        const texto = producto.textContent.toLowerCase();
+        producto.style.display = texto.includes(filtro) ? "" : "none";
+      });
+    });
+    window.onload = () => {
+  const userId = localStorage.getItem("userId");
+  if (userId) window.location.href = "index.html";
+};
+  </script>
+</body>
+</html>
