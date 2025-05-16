@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>360° Viewer Auto VR</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <a-scene embedded
+             vr-mode-ui="enabled: false"
+             device-orientation-permission-ui="enabled: true">
+             
+      <a-assets>
+        <img id="vrimage2" crossorigin="anonymous"
+             src="https://cdn.glitch.global/f53332bc-2459-4ba5-9d68-52f7f4848e11/file_00000000d29461fdb83b8d8e9a6ff010.png?v=1747193450942">
+      </a-assets>
+
+      <a-sky src="#vrimage2" rotation="0 -150 0"></a-sky>
+
+      <a-entity camera="fov: 95" look-controls position="0 1.6 0"></a-entity>
+    </a-scene>
+  </body>
+</html>

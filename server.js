@@ -1,3 +1,4 @@
+require("dotenv").config(); // SIEMPRE va primero
 const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
@@ -12,7 +13,7 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DB_PATH = "data.json";
-const uri = "mongodb+srv://slynderly:ortizuwu20@rucoy.2ysmrn5.mongodb.net/?retryWrites=true&w=majority&appName=rucoy";
+const uri = process.env.MONGO_URI;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -32,11 +33,10 @@ const uploadReplace = multer({ storage: multer.memoryStorage() });
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "slynderly@gmail.com",
-    pass: "ljsavwwrxczveyme"
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
-
 let users;
 const client = new MongoClient(uri);
 client.connect().then(() => {
@@ -70,7 +70,7 @@ client.connect().then(() => {
   app.post("/register", async (req, res) => {
     const { username, email, password } = req.body;
     const exists = await users.findOne({ email });
-    if (exists) return res.status(400).send("El correo ya está registrado.");
+    if (exists) return res.status(400).send("Esta cuenta ya fue registrada. Hemos enviado un correo de confirmación a tu bandeja de entrada. Por favor, verifica tu correo electrónico para completar el proceso. Si no lo encuentras, revisa también tu carpeta de spam o correo no deseado.");
 
     const hash = await bcrypt.hash(password, 10);
     const token = uuidv4();
@@ -84,7 +84,7 @@ client.connect().then(() => {
       coins: 0
     });
 
-  const link = `https://quiver-safe-paneer.glitch.me/verify/${token}`;
+  const link = `https://cord-equinox-dinghy.glitch.me/verify/${token}`;
 
 // Crear el contenido HTML con un diseño más atractivo y profesional
 const htmlContent = `
@@ -110,17 +110,17 @@ try {
 } catch (error) {
   console.error("Error al enviar el correo:", error);
 }
-    res.send("Registro exitoso. Verifica tu correo.");
+    res.send("¡Registro exitoso! Hemos enviado un correo de confirmación a tu bandeja de entrada. Por favor, verifica tu correo electrónico para completar el proceso. Si no lo encuentras, revisa también tu carpeta de spam o correo no deseado.");
   });
 
   app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const user = await users.findOne({ email });
-    if (!user) return res.json({ success: false, message: "Correo no registrado." });
-    if (!user.verified) return res.json({ success: false, message: "Cuenta no verificada." });
+    if (!user) return res.json({ success: false, message: "La cuenta ingresada no esta registrada" });
+    if (!user.verified) return res.json({ success: false, message: "Veifica tu cuenta.Hemos enviado un correo de confirmación a tu bandeja de entrada. Por favor, verifica tu correo electrónico para iniciar sesion. Si no lo encuentras, revisa también tu carpeta de spam o correo no deseado." });
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.json({ success: false, message: "Contraseña incorrecta." });
+    if (!match) return res.json({ success: false, message: "Contraseña incorrecta. Asegurese de ingresar los campos correctamente" });
 
     res.json({
       success: true,
@@ -235,19 +235,21 @@ try {
     });
   });
 app.post("/delete", async (req, res) => {
-  const { userId } = req.body;
-  if (!userId) return res.status(400).send("Falta el ID de usuario");
+    const { userId } = req.body;
+    if (!userId) return res.status(400).send("Falta el ID de usuario");
 
-  try {
-    const result = await users.deleteOne({ _id: new ObjectId(userId) });
-    if (result.deletedCount === 0) {
-      return res.status(404).send("Usuario no encontrado");
+    try {
+      const result = await users.deleteOne({ _id: new ObjectId(userId) });
+      if (result.deletedCount === 0) {
+        return res.status(404).send("Usuario no encontrado");
+      }
+      res.send("Cuenta eliminada exitosamente");
+    } catch (err) {
+      console.error("Error al eliminar cuenta:", err);
+      res.status(500).send("Error al eliminar cuenta");
     }
-    res.send("Cuenta eliminada exitosamente");
-  } catch (err) {
-    console.error("Error al eliminar cuenta:", err);
-    res.status(500).send("Error al eliminar cuenta");
-  }
-});
+  });
+
+  // Cerramos el bloque del client.connect().then(() => { ... })
   app.listen(PORT, () => console.log(`Servidor activo en puerto ${PORT}`));
 });

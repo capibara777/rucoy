@@ -1,8 +1,32 @@
 async function register() {
-  const username = document.getElementById("regUsername").value;
-  const email = document.getElementById("regEmail").value;
+  const username = document.getElementById("regUsername").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
   const password = document.getElementById("regPassword").value;
+  const acceptTerms = document.getElementById("acceptTerms").checked;
+  const response = document.getElementById("registerResponse");
 
+  // Validación de aceptación de términos
+  if (!acceptTerms) {
+    response.textContent = "Debes aceptar los términos y condiciones para continuar.";
+    response.className = "error";
+    return;
+  }
+
+  // Validación de campos vacíos
+  if (!username || !email || !password) {
+    response.textContent = "Por favor, completa todos los campos.";
+    response.className = "error";
+    return;
+  }
+
+  // Validación de correo con @gmail.com
+  if (!email.endsWith("@gmail.com")) {
+    response.textContent = "Solo se permiten correos @gmail.com";
+    response.className = "error";
+    return;
+  }
+
+  // Enviar solicitud al servidor
   const res = await fetch("/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -10,11 +34,9 @@ async function register() {
   });
 
   const text = await res.text();
-  const response = document.getElementById("registerResponse");
   response.textContent = text;
   response.className = text.includes("éxito") ? "success" : "error";
 }
-
 async function login() {
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;

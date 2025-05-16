@@ -61,10 +61,8 @@ async function cargarProductos() {
 
 // WhatsApp
 if (post.numero) {
-  const nombre = post.nombre_juego || "jugador";
-  const mensaje = encodeURIComponent(`Hola ${nombre}, vi que vendias: ${post.item} a $${formatearPrecio(post.precio)}. ¿Sigue disponible?`);
   const link = document.createElement("a");
-  link.href = `https://wa.me/${post.numero}?text=${mensaje}`;
+  link.href = `https://wa.me/${post.numero}`;
   link.target = "_blank";
   link.className = "btn-whatsapp";
   link.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="icono-wsp"> Contactar por WhatsApp`;

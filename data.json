@@ -1,1 +1,122 @@
-[]
+[
+  {
+    "item": "Dragon Hod fondo azul",
+    "precio": "140000",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747083224917-959.jpg",
+    "fecha": "1747083225246"
+  },
+  {
+    "item": "Lizard Light Armor",
+    "precio": "140000",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747083264245-913.jpg",
+    "fecha": "1747083264609"
+  },
+  {
+    "item": "Chicken Feather",
+    "precio": "60000",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747083325136-57.jpg",
+    "fecha": "1747083325480"
+  },
+  {
+    "item": "Vamp kell",
+    "precio": "60000",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747083360246-957.jpg",
+    "fecha": "1747083360379"
+  },
+  {
+    "item": "Lizard kell",
+    "precio": "400000",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747087164835-23.jpg",
+    "fecha": "1747087165100"
+  },
+  {
+    "item": "Lizard bots",
+    "precio": "100000",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747087281687-908.jpg",
+    "fecha": "1747087282076"
+  },
+  {
+    "item": "Lizard lega",
+    "precio": "199999",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747087318167-302.jpg",
+    "fecha": "1747087318291"
+  },
+  {
+    "item": "Gargoyle glob",
+    "precio": "255000",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747087383038-413.jpg",
+    "fecha": "1747087383372"
+  },
+  {
+    "item": "Lizard glove",
+    "precio": "130000",
+    "numero": "+591 64770568",
+    "nombre_juego": "Slynderly",
+    "imagen": "/uploads/1747087436331-358.jpg",
+    "fecha": "1747087436516"
+  },
+  {
+    "item": "Vampire Key",
+    "precio": "65000",
+    "numero": "+52 990 224 15 75",
+    "nombre_juego": "Nallllll",
+    "imagen": "/uploads/1747091644259-18.jpg",
+    "fecha": "1747091648101"
+  },
+  {
+    "item": "Vampire Key",
+    "precio": "65000",
+    "numero": "+52 990 224 15 75",
+    "nombre_juego": "Nallllll",
+    "imagen": "/uploads/1747091649064-504.jpg",
+    "fecha": "1747091653478"
+  },
+  {
+    "item": "Gargoyle Legs",
+    "precio": "420000",
+    "numero": "+52 990 224 15 75",
+    "nombre_juego": "Nallllll",
+    "imagen": "/uploads/1747091767156-571.jpg",
+    "fecha": "1747091771368"
+  },
+  {
+    "item": "Minotaur Beld",
+    "precio": "150000",
+    "numero": "+52 990 224 15 75",
+    "nombre_juego": "Nallllll",
+    "imagen": "/uploads/1747091874087-510.jpg",
+    "fecha": "1747091878404"
+  },
+  {
+    "item": "Esta madre",
+    "precio": "400000",
+    "numero": "+52 633 409 4785",
+    "nombre_juego": "El Bait",
+    "imagen": "/uploads/1747140484430-61.jpg",
+    "fecha": "1747140484688"
+  },
+  {
+    "item": "Vampire key",
+    "precio": "45",
+    "numero": "+18296733860",
+    "nombre_juego": "matrixofneo",
+    "imagen": "/uploads/1747308740946-667.png",
+    "fecha": "1747308741006"
+  }
+]

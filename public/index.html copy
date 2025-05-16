@@ -4,14 +4,65 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rucoy Market</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/10069/10069349.png" type="image/png">
   <link rel="stylesheet" href="style.css" />
+  <style>
+  /* Contenedor de productos */
+  #productosContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  /* Cada producto */
+  .producto {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Imagen del producto */
+  .producto-imagen {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+    .icono-wsp {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+</style>
 </head>
 <body>
   <!-- ENCABEZADO -->
   <header class="header">
     <h1>Rucoy Market</h1>
     <div class="header-buttons">
-      <input type="text" id="buscador" placeholder="Buscar productos..." />
+      
+      
+      
+     <input type="text" id="buscador" placeholder="Buscar productos..." />
+<!-- Este script filtra los productos que ya están cargados -->
+<script>
+  document.getElementById("buscador").addEventListener("input", function () {
+    const filtro = this.value.toLowerCase();
+    const productos = document.querySelectorAll("#productosContainer .producto");
+
+    productos.forEach(producto => {
+      const texto = producto.textContent.toLowerCase();
+      producto.style.display = texto.includes(filtro) ? "" : "none";
+    });
+  });
+</script> 
+      
+      
+      
       <button id="publicacionesBtn">Publicaciones</button>
       <button id="publicarBtn">+ Publicar</button>
       <button id="perfilBtn">Perfil</button>
@@ -33,7 +84,7 @@
         <input type="text" name="item" placeholder="Nombre del producto" required />
         <input type="number" name="precio" placeholder="Precio ($)" required />
         <input type="text" name="numero" placeholder="Número de WhatsApp" required />
-        <input type="text" name="nombre_juego" placeholder="Nombre en el juego (opcional)" />
+        <input type="text" name="nombre_juego" placeholder="Nombre en el juego" required />
         <label><strong>Imagen:</strong></label>
         <input type="file" name="imagen" accept="image/*" required />
         <div class="form-buttons">
@@ -53,44 +104,67 @@
 <script>
   async function showUserData() {
     const userId = localStorage.getItem("userId");
-    if (!userId) return window.location.href = "login.html";
+    const userEmail = localStorage.getItem("userEmail");
+    if (!userId || !userEmail) return window.location.href = "login.html";
 
     const res = await fetch(`/getUserData/${userId}`);
     if (!res.ok) return logout();
     const user = await res.json();
+    
+    
+    
+    
 
-    document.getElementById("userData").innerHTML = `
+  document.getElementById("userData").innerHTML = `
       <h3>Bienvenido, ${user.username}</h3>
       <p>Coins: ${user.coins}</p>
       <p>Correo: ${user.email}</p>
       <p>Verificado: ${user.verified ? "Sí" : "No"}</p>
       <input type="text" id="newUsername" placeholder="Nuevo nombre">
-      <button onclick="editUsername('${user.username}')">Editar nombre</button>
+      <button onclick="editUsername()">Editar nombre</button>
       <p id="editResponse"></p>
       <button onclick="deleteAccount('${user._id}')">Eliminar cuenta</button>
       <button onclick="logout()">Cerrar sesión</button>
+      <a href="https://chat.whatsapp.com/CkllBGsdzxi0jLiawyPuFQ" target="_blank">
+    <button>Comunidad</button>
+  </a>
     `;
-  }
+    }
 
-  async function editUsername(userId) {
-    const newUsername = document.getElementById("newUsername").value;
+  
+  
+  
+  
+  async function editUsername() {
+    const newUsername = document.getElementById("newUsername").value.trim();
+    const email = localStorage.getItem("userEmail");
+
+    if (!newUsername) {
+      document.getElementById("editResponse").textContent = "Debes ingresar un nuevo nombre.";
+      return;
+    }
+
     const res = await fetch("/edit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: localStorage.getItem("userEmail"), newUsername })
+      body: JSON.stringify({ email, newUsername })
     });
+
     const msg = await res.text();
     document.getElementById("editResponse").textContent = msg;
+
     if (msg.includes("Actualizado")) showUserData();
   }
 
   async function deleteAccount(userId) {
     if (!confirm("¿Eliminar cuenta?")) return;
+
     const res = await fetch("/delete", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }) // nombre correcto
+      body: JSON.stringify({ userId })
     });
+
     alert("\n" + await res.text());
     logout();
   }

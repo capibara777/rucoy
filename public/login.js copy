@@ -10,7 +10,9 @@ async function register() {
   });
 
   const text = await res.text();
-  document.getElementById("registerResponse").textContent = text;
+  const response = document.getElementById("registerResponse");
+  response.textContent = text;
+  response.className = text.includes("éxito") ? "success" : "error";
 }
 
 async function login() {
@@ -24,25 +26,16 @@ async function login() {
   });
 
   const data = await res.json();
-  const responseElement = document.getElementById("loginResponse");
+  const response = document.getElementById("loginResponse");
 
-  // Si el login es exitoso, redirigir al usuario
   if (data.success) {
     localStorage.setItem("userId", data.user._id);
+    localStorage.setItem("userEmail", data.user.email);
+    localStorage.setItem("username", data.user.username); // o user.username
     window.location.href = "index.html";
   } else {
-    // Mostrar el mensaje y aplicar una clase según el tipo de error
-    responseElement.textContent = data.message;
-
-    // Limpiar cualquier clase anterior
-    responseElement.classList.remove('success', 'error');
-
-    // Agregar la clase adecuada para el mensaje de error
-    if (data.message === "Correo no registrado." || data.message === "Cuenta no verificada." || data.message === "Contraseña incorrecta.") {
-      responseElement.classList.add('error');
-    } else {
-      responseElement.classList.add('success');
-    }
+    response.textContent = data.message;
+    response.className = "error";
   }
 }
 
